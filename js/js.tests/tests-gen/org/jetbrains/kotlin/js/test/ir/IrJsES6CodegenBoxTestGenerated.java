@@ -1199,6 +1199,12 @@ public class IrJsES6CodegenBoxTestGenerated extends AbstractIrJsES6CodegenBoxTes
     }
 
     @Test
+    @TestMetadata("k42000_crossmodule.kt")
+    public void testK42000_crossmodule() {
+      runTest("compiler/testData/codegen/box/basics/k42000_crossmodule.kt");
+    }
+
+    @Test
     @TestMetadata("kt75483.kt")
     public void testKt75483() {
       runTest("compiler/testData/codegen/box/basics/kt75483.kt");
