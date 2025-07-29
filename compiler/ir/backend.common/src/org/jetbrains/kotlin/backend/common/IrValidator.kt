@@ -48,6 +48,7 @@ data class IrValidatorConfig(
     val checkFunctionBody: Boolean = true,
     val checkUnboundSymbols: Boolean = false,
     val checkInlineFunctionUseSites: InlineFunctionUseSiteChecker? = null,
+    val checkReceiverForDynamicType: Boolean = true,
 )
 
 fun interface InlineFunctionUseSiteChecker {
@@ -131,7 +132,7 @@ private class IrFileValidator(
     private val propertyCheckers: MutableList<IrPropertyChecker> = mutableListOf()
 
     // TODO: Why don't we check parameters as well?
-    private val callCheckers: MutableList<IrCallChecker> = mutableListOf(IrCallFunctionDispatchReceiverChecker)
+    private val callCheckers: MutableList<IrCallChecker> = mutableListOf()
 
     init {
         if (config.checkValueScopes) {
@@ -184,6 +185,9 @@ private class IrFileValidator(
         }
         if (config.checkUnboundSymbols) {
             expressionCheckers.add(IrExpressionTypeChecker)
+        }
+        if (config.checkReceiverForDynamicType) {
+            callCheckers.add(IrCallFunctionDispatchReceiverChecker)
         }
     }
 
