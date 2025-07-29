@@ -49,6 +49,7 @@ data class IrValidatorConfig(
     val checkUnboundSymbols: Boolean = false,
     val checkInlineFunctionUseSites: InlineFunctionUseSiteChecker? = null,
     val checkReceiverForDynamicType: Boolean = true,
+    val checkOverridePrivateDeclaration: Boolean = true,
 )
 
 fun interface InlineFunctionUseSiteChecker {
@@ -123,8 +124,7 @@ private class IrFileValidator(
     private val throwCheckers: MutableList<IrThrowChecker> = mutableListOf()
     private val functionCheckers: MutableList<IrFunctionChecker> =
         mutableListOf(IrFunctionDispatchReceiverChecker, IrFunctionParametersChecker, IrConstructorReceiverChecker)
-    private val declarationBaseCheckers: MutableList<IrDeclarationChecker<IrDeclaration>> =
-        mutableListOf(IrPrivateDeclarationOverrideChecker)
+    private val declarationBaseCheckers: MutableList<IrDeclarationChecker<IrDeclaration>> = mutableListOf()
     private val propertyReferenceCheckers: MutableList<IrPropertyReferenceChecker> = mutableListOf()
     private val localDelegatedPropertyReferenceCheckers: MutableList<IrLocalDelegatedPropertyReferenceChecker> = mutableListOf()
     private val expressionCheckers: MutableList<IrExpressionChecker<IrExpression>> = mutableListOf()
@@ -188,6 +188,9 @@ private class IrFileValidator(
         }
         if (config.checkReceiverForDynamicType) {
             callCheckers.add(IrCallFunctionDispatchReceiverChecker)
+        }
+        if (config.checkOverridePrivateDeclaration) {
+            declarationBaseCheckers.add(IrPrivateDeclarationOverrideChecker)
         }
     }
 
