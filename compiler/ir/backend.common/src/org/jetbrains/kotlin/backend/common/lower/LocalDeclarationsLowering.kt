@@ -420,10 +420,6 @@ open class LocalDeclarationsLowering(
         }
 
         private inner class FunctionBodiesRewriter(val localContext: LocalContext?) : IrElementTransformerVoid() {
-            override fun visitLocalDelegatedProperty(declaration: IrLocalDelegatedProperty): IrStatement =
-                // Both accessors extracted as closures.
-                declaration.delegate.transformStatement(this)
-
             override fun visitClass(declaration: IrClass) =
                 localClasses[declaration]?.declaration
                     ?: visitMember(declaration)
