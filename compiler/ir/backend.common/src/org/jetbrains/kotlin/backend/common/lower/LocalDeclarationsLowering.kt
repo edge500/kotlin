@@ -172,7 +172,7 @@ open class LocalDeclarationsLowering(
 
     fun lower(
         irBlock: IrBlock, container: IrDeclaration, closestParent: IrDeclarationParent,
-        classesToLower: Set<IrClass>, functionsToSkip: Set<IrSimpleFunction>,
+        classesToLower: Set<IrClass>? = null, functionsToSkip: Set<IrSimpleFunction>? = null,
     ) {
         LocalDeclarationsTransformer(
             irBlock,
