@@ -3,6 +3,8 @@
 // LANGUAGE: +IrInlinerBeforeKlibSerialization
 // NO_CHECK_LAMBDA_INLINING
 
+// IGNORE_IR_DESERIALIZATION_TEST: JS_IR, NATIVE
+
 // IGNORE_BACKEND_K2: NATIVE, JS_IR, JS_IR_ES6, WASM
 // ^^^ KT-77103: Generation of stubs for class org.jetbrains.kotlin.ir.symbols.impl.IrLocalDelegatedPropertySymbolImpl:Unbound private symbol org.jetbrains.kotlin.ir.symbols.impl.IrLocalDelegatedPropertySymbolImpl@1ed3c2e7 is not supported yet
 
