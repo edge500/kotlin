@@ -34,20 +34,23 @@ internal class JvmLocalDeclarationPopupLowering(context: JvmBackendContext) : Lo
     // Upon moving such class, we record that it used to be in an initializer so that the codegen later sets its EnclosingMethod
     // to the primary constructor.
     override fun shouldPopUp(declaration: IrDeclaration, currentScope: ScopeWithIr?): Boolean {
-        // On JVM, lambdas have package-private visibility after LocalDeclarationsLowering; see `forClass` in `localDeclarationsPhase`.
-        if (!super.shouldPopUp(declaration, currentScope) && (declaration as? IrClass)?.isGeneratedLambdaClass != true) return false
+        if (declaration is IrClass) {
+            // On JVM, lambdas have package-private visibility after LocalDeclarationsLowering; see `forClass` in `localDeclarationsPhase`.
+            if (!super.shouldPopUp(declaration, currentScope) && !declaration.isGeneratedLambdaClass) return false
 
-        var parent = currentScope?.irElement
-        while (parent is IrFunction) {
-            parent = inlineLambdaToScope[parent] ?: break
-        }
+            var parent = currentScope?.irElement
+            while (parent is IrFunction) {
+                parent = inlineLambdaToScope[parent] ?: break
+            }
 
-        if (parent is IrAnonymousInitializer && !parent.isStatic ||
-            parent is IrField && !parent.isStatic
-        ) {
-            declaration.isEnclosedInConstructor = true
-            return true
-        }
-        return false
+            if (parent is IrAnonymousInitializer && !parent.isStatic ||
+                parent is IrField && !parent.isStatic
+            ) {
+                declaration.isEnclosedInConstructor = true
+                return true
+            }
+            return false
+        } else
+            return super.shouldPopUp(declaration, currentScope)
     }
 }
