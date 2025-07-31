@@ -822,6 +822,12 @@ open class LocalDeclarationsLowering(
                 createTransformedSimpleFunction(it)
             }
 
+            localFunctions.values.forEach {
+                val newDeclaration = it.transformedDeclaration
+                newDeclaration.parent = it.declaration.parent
+                newDeclaration.acceptChildren(SetDeclarationsParentVisitor, newDeclaration)
+            }
+
             // After lifting local functions, local functions created for unbound symbols are duplicates of the lifted local functions.
             // They cause exceptions, because they do not have function bodies. We have to clean them up here.
             container.fileOrNull?.let { cleanUpLocalFunctionsForUnboundSymbols(it) }
@@ -937,7 +943,7 @@ open class LocalDeclarationsLowering(
                 tp.superTypes = tp.superTypes.memoryOptimizedMap { localFunctionContext.remapType(it) }
             }
 
-            newDeclaration.parent = oldDeclaration.parent
+            newDeclaration.parent = ownerParent
             newDeclaration.returnType = localFunctionContext.remapType(oldDeclaration.returnType)
             newDeclaration.copyAttributes(oldDeclaration)
             newDeclaration.isOriginallyLocalDeclaration = true
@@ -968,7 +974,6 @@ open class LocalDeclarationsLowering(
                 }
                 oldParameterToNew[argument]!!.defaultValue = body
             }
-            newDeclaration.acceptChildren(SetDeclarationsParentVisitor, newDeclaration)
 
             transformedDeclarations[oldDeclaration] = newDeclaration
         }
