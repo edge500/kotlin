@@ -670,6 +670,11 @@ class ObjCExportHeaderGeneratorTest(private val generator: HeaderGenerator) {
         doTest(headersTestDataDir.resolve("propertyGetter"))
     }
 
+    @Test
+    fun `test - private companion`() {
+        doTest(headersTestDataDir.resolve("privateCompanion"))
+    }
+
     private fun doTest(root: File, configuration: Configuration = Configuration()) {
         if (!root.isDirectory) fail("Expected ${root.absolutePath} to be directory")
         val generatedHeaders = generator.generateHeaders(root, configuration).toString()
