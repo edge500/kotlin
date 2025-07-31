@@ -28,6 +28,8 @@ import org.jetbrains.kotlin.ir.util.isOriginallyLocalDeclaration
 import org.jetbrains.kotlin.ir.util.setDeclarationsParent
 import org.jetbrains.kotlin.ir.visitors.IrElementTransformerVoid
 import org.jetbrains.kotlin.ir.visitors.IrTransformer
+import org.jetbrains.kotlin.ir.visitors.IrVisitorVoid
+import org.jetbrains.kotlin.ir.visitors.acceptChildrenVoid
 import org.jetbrains.kotlin.ir.visitors.transformChildrenVoid
 
 /**
@@ -74,6 +76,34 @@ class LocalClassesInInlineLambdasLowering(val context: LoweringContext) : BodyLo
 
                 if (inlineLambdas.isEmpty())
                     return expression
+
+                // TODO: Remove fragment below after fixing KT-77103
+                // This fragment will make sure that LDP are lifted iff there are some other local declarations that could potentially "expose" them
+                val localDeclarations = mutableSetOf<IrDeclaration>()
+
+                for (lambda in inlineLambdas) {
+                    lambda.acceptChildrenVoid(object : IrVisitorVoid() {
+                        override fun visitElement(element: IrElement) {
+                            element.acceptChildrenVoid(this)
+                        }
+
+                        override fun visitClass(declaration: IrClass) {
+                            localDeclarations.add(declaration)
+                        }
+
+                        override fun visitFunction(declaration: IrFunction) {
+                            localDeclarations.add(declaration)
+                        }
+
+                        override fun visitLocalDelegatedProperty(declaration: IrLocalDelegatedProperty) {
+                            return
+                        }
+                    })
+                }
+
+                if (localDeclarations.isEmpty())
+                    return expression
+                // TODO: Remove fragment above after fixing KT-77103
 
                 val irBlock = IrBlockImpl(expression.startOffset, expression.endOffset, expression.type).apply {
                     statements += expression
