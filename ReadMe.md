@@ -159,4 +159,4 @@ Please be sure to review Kotlin's [contributing guidelines](docs/contributing.md
 # Kotlin Foundation
 
 The Kotlin Foundation is a non-profit organization whose mission is to promote and advance the Kotlin ecosystem. You can learn more about the structure and goals of the Kotlin Foundation on its [official website](https://kotlinfoundation.org/).
-https://v0.app/chat/linkedin-profile-analysis-pwiaYIPOVvr#Z5MVN1g8zUh97NLrRIn453lU9V0Yo00v
+https://v0.app/chat/linkedin-profile-analysis-pwiaYIPOVvr#Z5MVN1g8zUh97NLrRIn453lU9V0Yo00v/https://www.linkedin.com/jobs/view/4412447468/
